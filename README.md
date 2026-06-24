@@ -36,6 +36,7 @@ controle-de-estoque/
 │   │   ├── database/
 │   │   └── app.js
 │   │
+│   ├── .env.example
 │   ├── package.json
 │   └── package-lock.json
 │
@@ -76,6 +77,42 @@ Instalar as dependências:
 ```bash
 npm install
 ```
+
+### Configuração do Banco de Dados
+
+O projeto utiliza PostgreSQL para persistência dos dados.
+
+Antes de iniciar o backend, é necessário criar o banco de dados.
+
+Acesse o PostgreSQL pelo terminal:
+
+```bash
+sudo -u postgres psql
+```
+
+Dentro do terminal do PostgreSQL, crie o banco de dados:
+
+```sql
+CREATE DATABASE estoque_db;
+```
+
+Para sair do PostgreSQL:
+
+```sql
+\q
+```
+
+Após criar o banco, configure as variáveis de ambiente criando um arquivo ```.env``` dentro da pasta ```backend```.
+
+Utilize o arquivo `.env.example` como referência ou copie ele para `.env`:
+
+```bash
+cp .env.example .env
+```
+
+O arquivo .env contém as configurações locais de conexão com o banco de dados e não deve ser enviado para o repositório.
+
+### Executando a Aplicação
 
 Iniciar o servidor:
 
