@@ -93,7 +93,7 @@ sudo -u postgres psql
 Dentro do terminal do PostgreSQL, crie o banco de dados:
 
 ```sql
-CREATE DATABASE estoque_db;
+CREATE DATABASE estoque_pi;
 ```
 
 Para sair do PostgreSQL:
