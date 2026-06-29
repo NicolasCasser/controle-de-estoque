@@ -1,13 +1,20 @@
+// Configuração principal da aplicação e inicialização do servidor.
+
 const express = require("express");
 const AppDataSource = require("./database/data-source");
+
+const productRoutes = require("./modules/products/product.routes");
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
 
+// Rotas da aplicação
+app.use("/products", productRoutes);
+
 app.get("/", (req, res) => {
-    res.send("Hello World!");
+    res.send("API do Sistema de Controle de Estoque");
 });
 
 AppDataSource.initialize()
