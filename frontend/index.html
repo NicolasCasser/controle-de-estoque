@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Consulta de produtos e estoque atual">
+  <title>Produtos | Controle de Estoque</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Página inicial">
+      <span class="brand-mark" aria-hidden="true">CE</span>
+      <span>Controle de Estoque</span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a class="nav-link active" href="/" aria-current="page">Produtos</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-heading" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Inventário</p>
+        <h1 id="page-title">Produtos</h1>
+        <p class="subtitle">Acompanhe os itens cadastrados e suas quantidades em estoque.</p>
+      </div>
+      <div class="summary" aria-live="polite">
+        <span id="product-count">0 produtos</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Lista de produtos">
+      <div class="toolbar">
+        <label class="search-field" for="search-input">
+          <span class="sr-only">Buscar produto por nome</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+          <input id="search-input" type="search" placeholder="Buscar produto por nome..." autocomplete="off">
+        </label>
+      </div>
+
+      <div id="status-message" class="status-message" role="status">Carregando produtos...</div>
+
+      <div id="table-container" class="table-container" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Nome</th>
+              <th scope="col">Descrição</th>
+              <th scope="col" class="quantity-column">Quantidade atual</th>
+            </tr>
+          </thead>
+          <tbody id="products-body"></tbody>
+        </table>
+      </div>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">⌕</div>
+        <h2>Nenhum produto encontrado</h2>
+        <p>Tente buscar por outro nome.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

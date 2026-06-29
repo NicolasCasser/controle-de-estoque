@@ -6,26 +6,29 @@ const Product = require('./product.entity');
 const productRepository = AppDataSource.getRepository(Product);
 
 class ProductService {
+
     // Retorna produtos cadastrados podendo filtrar pelo nome
     async findAll(search) {
-
         const query = productRepository
             .createQueryBuilder("product")
             .orderBy("product.name", "ASC");
 
-        if (search) {
+        if (search && search.trim()) {
             query.where(
                 "product.name ILIKE :search",
-                { search: `%${search}%` }
+                { search: `%${search.trim()}%` }
             );
         }
 
         return query.getMany();
     }
 
+
     // Busca um produto pelo id
     async findById(id) {
-        const product = await productRepository.findOneBy({ id });
+        const product = await productRepository.findOneBy({
+            id: this.parseId(id)
+        });
 
         if (!product) {
             throw new Error("Produto não encontrado");
@@ -34,65 +37,108 @@ class ProductService {
         return product;
     }
 
+
     // Cria um novo produto aplicando as regras de negócio
     async create(data) {
+
         if (!data.name || !data.name.trim()) {
             throw new Error('Nome do produto é obrigatório');
         }
 
-        if (data.initialQuantity === undefined || data.initialQuantity < 0) {
-            throw new Error('Quantidade inicial inválida');
-        }
+        const quantity = Number(data.initialQuantity);
 
-        if (!Number.isInteger(data.initialQuantity)) {
-            throw new Error("Quantidade inicial deve ser um número inteiro.");
+        if (!Number.isInteger(quantity) || quantity < 0) {
+            throw new Error(
+                'Quantidade inicial deve ser um número inteiro maior ou igual a zero'
+            );
         }
 
         const newProduct = {
-            name: data.name,
-            description: data.description,
-            currentQuantity: data.initialQuantity,
+            name: data.name.trim(),
+            description: this.normalizeOptionalText(data.description),
+            currentQuantity: quantity,
         };
 
         return productRepository.save(newProduct);
     }
 
+
     // Atualiza um produto existente aplicando as regras de negócio
     async update(id, data) {
-        const product = await productRepository.findOneBy({ id });
+
+        const product = await productRepository.findOneBy({
+            id: this.parseId(id)
+        });
 
         if (!product) {
             throw new Error('Produto não encontrado');
         }
 
-        if (data.name !== undefined && !data.name.trim()) {
-            throw new Error("Nome do produto é obrigatório.");
+
+        if (data.name !== undefined) {
+            if (!data.name.trim()) {
+                throw new Error("Nome do produto é obrigatório.");
+            }
+
+            product.name = data.name.trim();
         }
 
+
+        // Não permite alteração manual do estoque
         if (data.currentQuantity !== undefined) {
-            throw new Error('Não é possivél alterar a quantidade do produto');
+            throw new Error(
+                'Não é possível alterar a quantidade do produto'
+            );
         }
 
-        if (data.name) {
-            product.name = data.name;
-        }
 
         if (data.description !== undefined) {
-            product.description = data.description;
+            product.description = this.normalizeOptionalText(
+                data.description
+            );
         }
+
 
         return productRepository.save(product);
     }
 
-    // Realiza a exclusão lógica de um produto
+
+    // Realiza exclusão lógica do produto
     async remove(id) {
-        const product = await productRepository.findOneBy({ id });
+
+        const product = await productRepository.findOneBy({
+            id: this.parseId(id)
+        });
 
         if (!product) {
             throw new Error('Produto não encontrado');
         }
 
-        return productRepository.softDelete({ id });
+        return productRepository.softDelete({
+            id: product.id
+        });
+    }
+
+    // Valida e converte o id recebido
+    parseId(id) {
+
+        const parsedId = Number(id);
+
+        if (!Number.isInteger(parsedId) || parsedId <= 0) {
+            throw new Error('Identificador do produto inválido');
+        }
+
+        return parsedId;
+    }
+
+    // Trata campos de texto opcionais
+    normalizeOptionalText(value) {
+
+        if (value === undefined || value === null || value === '') {
+            return null;
+        }
+
+        return String(value).trim() || null;
     }
 }
 
