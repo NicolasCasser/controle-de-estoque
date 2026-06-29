@@ -9,7 +9,7 @@ let products = [];
 
 function productName(product) { return product.nome ?? product.name ?? ""; }
 function productDescription(product) { return product.descricao ?? product.description ?? "Sem descrição"; }
-function productQuantity(product) { return Number(product.quantidadeAtual ?? product.currentQuantity ?? 0); }
+function productQuantity(product) { return Number(product.currentQuantity ?? 0); }
 
 function updateCount(count) {
   productCount.textContent = count === 1 ? "1 produto" : `${count} produtos`;

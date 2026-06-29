@@ -1,53 +1,56 @@
+// Entidade responsável por representar movimentações de estoque
+
 const { EntitySchema } = require("typeorm");
 
 const Movement = new EntitySchema({
-name: "Movement",
-tableName: "movements",
 
-columns: {
-    id: {
-    type: Number,
-    primary: true,
-    generated: true,
+    name: "Movement",
+    tableName: "movements",
+
+    columns: {
+
+        id: {
+            type: "int",
+            primary: true,
+            generated: true,
+        },
+
+        tipo: {
+            type: "varchar",
+            length: 20,
+            nullable: false,
+        },
+
+        quantidade: {
+            type: "int",
+            nullable: false,
+        },
+
+        observacao: {
+            type: "varchar",
+            nullable: true,
+        },
+
+        createdAt: {
+            name: "created_at",
+            type: "timestamp",
+            createDate: true,
+        },
     },
 
-    productId: {
-    type: Number,
-    nullable: false,
-    },
+    relations: {
 
-    tipo: {
-    type: "varchar",
-    length: 20,
-    nullable: false,
-    },
+        product: {
+            type: "many-to-one",
+            target: "Product",
 
-    quantidade: {
-    type: Number,
-    nullable: false,
-    },
+            joinColumn: {
+                name: "product_id",
+            },
 
-    observacao: {
-    type: "varchar",
-    nullable: true,
+            nullable: false,
+        },
     },
-
-    createdAt: {
-    type: "timestamp",
-    createDate: true,
-    },
-},
-
-relations: {
-    product: {
-    type: "many-to-one",
-    target: "Product",
-    joinColumn: {
-        name: "productId",
-    },
-    nullable: false,
-    },
-},
 });
 
 module.exports = Movement;

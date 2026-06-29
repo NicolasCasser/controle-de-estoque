@@ -1,47 +1,49 @@
+// Entidade responsável por representar os produtos no banco de dados
+
 const { EntitySchema } = require("typeorm");
 
-const Product = new EntitySchema({
-name: "Product",
-tableName: "products",
+module.exports = new EntitySchema({
+    name: 'Product',
+    tableName: 'products',
 
-columns: {
-    id: {
-    type: Number,
-    primary: true,
-    generated: true,
-    },
+    columns: {
+        id: {
+            primary: true,
+            type: 'int',
+            generated: true,
+        },
 
-    nome: {
-    type: "varchar",
-    nullable: false,
-    },
+        name: {
+            type: 'varchar',
+        },
 
-    descricao: {
-    type: "varchar",
-    nullable: true,
-    },
+        description: {
+            type: 'varchar',
+            nullable: true,
+        },
 
-    quantidadeAtual: {
-    type: Number,
-    default: 0,
-    nullable: false,
-    },
+        currentQuantity: {
+            name: 'current_quantity',
+            type: 'int',
+        },
 
-    createdAt: {
-    type: "timestamp",
-    createDate: true,
-    },
+        createdAt: {
+            name: 'created_at',
+            type: 'timestamp',
+            createDate: true,
+        },
 
-    updatedAt: {
-    type: "timestamp",
-    updateDate: true,
-    },
+        updatedAt: {
+            name: 'updated_at',
+            type: 'timestamp',
+            updateDate: true,
+        },
 
-    deletedAt: {
-    type: "timestamp",
-    nullable: true,
+        deletedAt: {
+            name: 'deleted_at',
+            type: 'timestamp',
+            deleteDate: true,
+            nullable: true,
+        },
     },
-},
 });
-
-module.exports = Product;

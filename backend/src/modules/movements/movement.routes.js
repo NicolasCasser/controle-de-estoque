@@ -1,9 +1,11 @@
+// Rotas responsáveis pelas operações relacionadas às movimentações
+
 const { Router } = require("express");
 const movementController = require("./movement.controller");
 
-const movementRoutes = Router();
+const router = Router();
 
-movementRoutes.get("/movements", movementController.list);
-movementRoutes.post("/movements", movementController.create);
+router.get("/", movementController.list);
+router.post("/", movementController.create);
 
-module.exports = movementRoutes;
+module.exports = router;

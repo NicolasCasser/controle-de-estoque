@@ -1,11 +1,15 @@
+// Rotas responsáveis pelas operações relacionadas aos produtos
+
 const { Router } = require("express");
+
 const productController = require("./product.controller");
 
-const productRoutes = Router();
-productRoutes.get("/products", productController.list);
-productRoutes.get("/products/:id", productController.getById);
-productRoutes.post("/products", productController.create);
-productRoutes.put("/products/:id", productController.update);
-productRoutes.delete("/products/:id", productController.delete);
+const router = Router();
 
-module.exports = productRoutes;
+router.get("/", productController.findAll);
+router.get("/:id", productController.findById);
+router.post("/", productController.create);
+router.put("/:id", productController.update);
+router.delete("/:id", productController.remove);
+
+module.exports = router;

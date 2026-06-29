@@ -1,64 +1,86 @@
-const productService = require("./product.service");
+// Controller responsável por receber requisições relacionadas aos produtos
+
+const productService = require('./product.service');
 
 class ProductController {
-  async list(request, response) {
-    try {
-      const products = await productService.listProducts(request.query.search);
-      return response.status(200).json(products);
-    } catch (error) {
-      return response.status(400).json({ message: error.message });
-    }
-  }
 
-  async getById(request, response) {
-    try {
-      const product = await productService.getProductById(request.params.id);
-      return response.status(200).json(product);
-    } catch (error) {
-      return ProductController.handleError(response, error);
-    }
-  }
+    // Lista os produtos cadastrados
+    async findAll(req, res) {
+        try {
+            const { search } = req.query;
 
-  async create(request, response) {
-    try {
-      const { nome, descricao, quantidadeInicial, name, description, initialQuantity } = request.body;
-      const product = await productService.createProduct({
-        nome: nome ?? name,
-        descricao: descricao ?? description,
-        quantidadeInicial: quantidadeInicial ?? initialQuantity ?? 0,
-      });
-      return response.status(201).json(product);
-    } catch (error) {
-      return response.status(400).json({ message: error.message });
-    }
-  }
+            const products = await productService.findAll(search);
 
-  async update(request, response) {
-    try {
-      const { nome, descricao, name, description } = request.body;
-      const product = await productService.updateProduct(request.params.id, {
-        nome: nome ?? name,
-        descricao: descricao ?? description,
-      });
-      return response.status(200).json(product);
-    } catch (error) {
-      return ProductController.handleError(response, error);
-    }
-  }
+            return res.status(200).json(products);
 
-  async delete(request, response) {
-    try {
-      await productService.deleteProduct(request.params.id);
-      return response.status(204).send();
-    } catch (error) {
-      return ProductController.handleError(response, error);
+        } catch (error) {
+            return ProductController.handleError(res, error);
+        }
     }
-  }
 
-  static handleError(response, error) {
-    const status = error.message === "Produto não encontrado." ? 404 : 400;
-    return response.status(status).json({ message: error.message });
-  }
+    // Busca um produto pelo id
+    async findById(req, res) {
+        try {
+            const product = await productService.findById(req.params.id);
+
+            return res.status(200).json(product);
+
+        } catch (error) {
+            return ProductController.handleError(res, error);
+        }
+    }
+
+    // Cria um novo produto
+    async create(req, res) {
+        try {
+            const product = await productService.create(req.body);
+
+            return res.status(201).json(product);
+
+        } catch (error) {
+            return ProductController.handleError(res, error);
+        }
+    }
+
+    // Atualiza um produto existente
+    async update(req, res) {
+        try {
+            const product = await productService.update(
+                req.params.id,
+                req.body
+            );
+
+            return res.status(200).json(product);
+
+        } catch (error) {
+            return ProductController.handleError(res, error);
+        }
+    }
+
+    // Remove um produto
+    async remove(req, res) {
+        try {
+            await productService.remove(req.params.id);
+
+            return res.status(204).send();
+
+        } catch (error) {
+            return ProductController.handleError(res, error);
+        }
+    }
+
+    // Centraliza tratamento de erros
+    static handleError(res, error) {
+
+        if (error.message === "Produto não encontrado") {
+            return res.status(404).json({
+                message: error.message
+            });
+        }
+
+        return res.status(400).json({
+            message: error.message
+        });
+    }
 }
-
 module.exports = new ProductController();
