@@ -15,18 +15,18 @@ const Movement = new EntitySchema({
             generated: true,
         },
 
-        tipo: {
+        type: {
             type: "varchar",
             length: 20,
             nullable: false,
         },
 
-        quantidade: {
+        quantity: {
             type: "int",
             nullable: false,
         },
 
-        observacao: {
+        observation: {
             type: "varchar",
             nullable: true,
         },

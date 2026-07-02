@@ -4,20 +4,20 @@ const AppDataSource = require("../../database/data-source");
 
 class MovementService {
     // Lista movimentações podendo filtrar pelo tipo
-    async listMovements(tipo) {
+    async listMovements(type) {
 
         const movementRepository =
             AppDataSource.getRepository("Movement");
 
         const where = {};
 
-        if (tipo) {
-            if (!["ENTRADA", "SAIDA"].includes(tipo)) {
+        if (type) {
+            if (!["ENTRADA", "SAIDA"].includes(type)) {
                 throw new Error(
                     "O tipo da movimentação deve ser ENTRADA ou SAIDA."
                 );
             }
-            where.tipo = tipo;
+            where.type = type;
         }
 
         return movementRepository.find({
@@ -34,26 +34,26 @@ class MovementService {
     // Cria uma movimentação e atualiza o estoque
     async createMovement({
         productId,
-        tipo,
-        quantidade,
-        observacao
+        type,
+        quantity,
+        observation
     }) {
 
         if (!productId) {
             throw new Error("O produto é obrigatório.");
         }
 
-        if (!tipo || !["ENTRADA", "SAIDA"].includes(tipo)) {
+        if (!type || !["ENTRADA", "SAIDA"].includes(type)) {
             throw new Error(
                 "O tipo da movimentação deve ser ENTRADA ou SAIDA."
             );
         }
 
-        const quantidadeNumerica = Number(quantidade);
+        const quantityNumber = Number(quantity);
 
         if (
-            !Number.isInteger(quantidadeNumerica) ||
-            quantidadeNumerica <= 0
+            !Number.isInteger(quantityNumber) ||
+            quantityNumber <= 0
         ) {
             throw new Error(
                 "A quantidade deve ser um número inteiro maior que zero."
@@ -85,28 +85,28 @@ class MovementService {
                     );
                 }
 
-                if (tipo === "ENTRADA") {
-                    product.currentQuantity += quantidadeNumerica;
+                if (type === "ENTRADA") {
+                    product.currentQuantity += quantityNumber;
                 }
 
-                if (tipo === "SAIDA") {
+                if (type === "SAIDA") {
                     if (
-                        quantidadeNumerica >
+                        quantityNumber >
                         product.currentQuantity
                     ) {
                         throw new Error(
                             "Quantidade solicitada maior que a disponível."
                         );
                     }
-                    product.currentQuantity -= quantidadeNumerica;
+                    product.currentQuantity -= quantityNumber;
                 }
 
                 const newMovement =
                     movementRepository.create({
                         product,
-                        tipo,
-                        quantidade: quantidadeNumerica,
-                        observacao,
+                        type,
+                        quantity: quantityNumber,
+                        observation,
                     });
 
                 await productRepository.save(product);

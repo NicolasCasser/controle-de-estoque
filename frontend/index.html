@@ -15,6 +15,7 @@
     </a>
     <nav aria-label="Navegação principal">
       <a class="nav-link active" href="/" aria-current="page">Produtos</a>
+      <a class="nav-link" href="historico.html">Histórico</a>
     </nav>
   </header>
 
@@ -25,8 +26,11 @@
         <h1 id="page-title">Produtos</h1>
         <p class="subtitle">Acompanhe os itens cadastrados e suas quantidades em estoque.</p>
       </div>
-      <div class="summary" aria-live="polite">
-        <span id="product-count">0 produtos</span>
+      <div class="page-actions">
+        <div class="summary" aria-live="polite">
+          <span id="product-count">0 produtos</span>
+        </div>
+        <button type="button" id="new-product-btn" class="btn-primary">+ Novo produto</button>
       </div>
     </section>
 
@@ -48,6 +52,7 @@
               <th scope="col">Nome</th>
               <th scope="col">Descrição</th>
               <th scope="col" class="quantity-column">Quantidade atual</th>
+              <th scope="col" class="actions-column">Ações</th>
             </tr>
           </thead>
           <tbody id="products-body"></tbody>
@@ -61,6 +66,108 @@
       </div>
     </section>
   </main>
+
+  <!-- Modal de cadastro/edição de produto -->
+  <div id="product-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+      <div class="modal-header">
+        <h2 id="product-modal-title">Novo produto</h2>
+        <button type="button" class="modal-close" data-close-modal="product-modal" aria-label="Fechar">&times;</button>
+      </div>
+      <form id="product-form">
+        <div class="modal-body">
+          <div id="product-form-error" class="modal-error" role="alert" hidden></div>
+
+          <div class="field">
+            <label for="product-name">Nome</label>
+            <input type="text" id="product-name" name="name" autocomplete="off">
+            <span class="field-error" id="product-name-error"></span>
+          </div>
+
+          <div class="field">
+            <label for="product-description">Descrição</label>
+            <textarea id="product-description" name="description"></textarea>
+          </div>
+
+          <div class="field" id="product-quantity-field">
+            <label for="product-quantity">Quantidade inicial</label>
+            <input type="number" id="product-quantity" name="initialQuantity" min="0" step="1">
+            <span class="field-error" id="product-quantity-error"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal="product-modal">Cancelar</button>
+          <button type="submit" class="btn-primary" id="product-form-submit">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de movimentação de estoque -->
+  <div id="movement-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="movement-modal-title">
+      <div class="modal-header">
+        <h2 id="movement-modal-title">Movimentar estoque</h2>
+        <button type="button" class="modal-close" data-close-modal="movement-modal" aria-label="Fechar">&times;</button>
+      </div>
+      <form id="movement-form">
+        <div class="modal-body">
+          <div id="movement-form-error" class="modal-error" role="alert" hidden></div>
+
+          <div class="field">
+            <label>Produto</label>
+            <div class="field-static" id="movement-product-name"></div>
+          </div>
+
+          <div class="field">
+            <label>Tipo de movimentação</label>
+            <div class="segmented" role="group" aria-label="Tipo de movimentação">
+              <button type="button" data-type="ENTRADA" class="active">Entrada</button>
+              <button type="button" data-type="SAIDA">Saída</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="movement-quantity">Quantidade</label>
+            <input type="number" id="movement-quantity" name="quantity" min="1" step="1">
+            <span class="field-error" id="movement-quantity-error"></span>
+          </div>
+
+          <div class="field">
+            <label for="movement-observation">Observação (opcional)</label>
+            <textarea id="movement-observation" name="observation"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal="movement-modal">Cancelar</button>
+          <button type="submit" class="btn-primary" id="movement-form-submit">Confirmar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação de exclusão -->
+  <div id="delete-modal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <div class="modal-header">
+        <h2 id="delete-modal-title">Excluir produto</h2>
+        <button type="button" class="modal-close" data-close-modal="delete-modal" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="delete-modal-error" class="modal-error" role="alert" hidden></div>
+        <p>Tem certeza que deseja excluir <strong id="delete-product-name"></strong>? Essa ação não pode ser desfeita.</p>
+        <div id="delete-modal-warning" class="modal-warning" hidden>
+          Este produto ainda possui estoque disponível. Ele será removido das consultas, mas o histórico de movimentações continuará disponível.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close-modal="delete-modal">Cancelar</button>
+        <button type="button" class="btn-danger" id="delete-confirm-btn">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
 
   <script src="app.js" defer></script>
 </body>
