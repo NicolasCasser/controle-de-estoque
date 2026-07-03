@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Histórico de movimentações de estoque">
+  <title>Histórico | Controle de Estoque</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Página inicial">
+      <span class="brand-mark" aria-hidden="true">CE</span>
+      <span>Controle de Estoque</span>
+    </a>
+    <nav aria-label="Navegação principal">
+      <a class="nav-link" href="/">Produtos</a>
+      <a class="nav-link active" href="historico.html" aria-current="page">Histórico</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="page-heading" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Inventário</p>
+        <h1 id="page-title">Histórico</h1>
+        <p class="subtitle">Consulte todas as entradas e saídas de estoque registradas.</p>
+      </div>
+      <div class="summary" aria-live="polite">
+        <span id="movement-count">0 movimentações</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Histórico de movimentações">
+      <div class="toolbar">
+        <div class="filter-tabs" role="group" aria-label="Filtrar por tipo">
+          <button type="button" data-type="" class="active">Todas</button>
+          <button type="button" data-type="ENTRADA">Entradas</button>
+          <button type="button" data-type="SAIDA">Saídas</button>
+        </div>
+      </div>
+
+      <div id="status-message" class="status-message" role="status">Carregando movimentações...</div>
+
+      <div id="table-container" class="table-container" hidden>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Produto</th>
+              <th scope="col">Tipo</th>
+              <th scope="col" class="quantity-column">Quantidade</th>
+              <th scope="col">Observação</th>
+            </tr>
+          </thead>
+          <tbody id="movements-body"></tbody>
+        </table>
+      </div>
+
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">⌕</div>
+        <h2>Nenhuma movimentação encontrada</h2>
+        <p>Tente selecionar outro filtro.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="historico.js" defer></script>
+</body>
+</html>

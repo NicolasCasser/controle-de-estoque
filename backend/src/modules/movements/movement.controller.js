@@ -6,9 +6,9 @@ class MovementController {
     // Lista movimentações cadastradas
     async list(req, res) {
         try {
-            const { tipo } = req.query;
+            const { type } = req.query;
 
-            const movements = await movementService.listMovements(tipo);
+            const movements = await movementService.listMovements(type);
 
             return res.status(200).json(movements);
 
@@ -22,13 +22,13 @@ class MovementController {
     // Cria uma nova movimentação
     async create(req, res) {
         try {
-            const { productId, tipo, quantidade, observacao } = req.body;
+            const { productId, type, quantity, observation } = req.body;
 
             const movement = await movementService.createMovement({
                 productId,
-                tipo,
-                quantidade,
-                observacao,
+                type,
+                quantity,
+                observation,
             });
 
             return res.status(201).json(movement);
