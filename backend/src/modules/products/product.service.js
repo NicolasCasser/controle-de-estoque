@@ -40,7 +40,6 @@ class ProductService {
 
     // Cria um novo produto aplicando as regras de negócio
     async create(data) {
-
         if (!data.name || !data.name.trim()) {
             throw new Error('Nome do produto é obrigatório');
         }
@@ -53,13 +52,32 @@ class ProductService {
             );
         }
 
-        const newProduct = {
-            name: data.name.trim(),
-            description: this.normalizeOptionalText(data.description),
-            currentQuantity: quantity,
-        };
+        return AppDataSource.manager.transaction(async (manager) => {
+            const productRepository = manager.getRepository("Product");
+            const movementRepository = manager.getRepository("Movement");
 
-        return productRepository.save(newProduct);
+            const product = productRepository.create({
+                name: data.name.trim(),
+                description: this.normalizeOptionalText(data.description),
+                currentQuantity: quantity,
+            });
+
+            const savedProduct = await productRepository.save(product);
+
+            if (quantity > 0) {
+                const movement = movementRepository.create({
+                    productId: savedProduct.id,
+                    product: savedProduct,
+                    type: "ENTRADA",
+                    quantity: quantity,
+                    observation: "Estoque inicial",
+                });
+
+                await movementRepository.save(movement);
+            }
+
+            return savedProduct;
+        });
     }
 
 
